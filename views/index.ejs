@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+
+<body>
+
+
+  <div class="container-fluid">
+    <h1>Liste de choses à faire</h1>
+
+    <div class="p-2">
+      <form action="/add" method="post">
+        <div class="btn-group">
+          <div class="form-floating mb-8">
+            <input type="text" class="form-control" name="todo" required>
+            <label for="floatingInput">Tâche</label>
+          </div>
+          <button type="submit" class="btn btn-outline-primary">Ajouter</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="p-2">
+      <table class="table table-striped">
+        <thead class="table-dark text-center">
+          <th>Tâche</th>
+          <th>Progrès</th>
+          <th></th>
+        </thead>
+        <tbody class="text-center">
+          <% todos.forEach(todo=> { %>
+            <tr>
+              <form action="/update/<%= todo.id %>" method="post" style="display: inline;">
+                <td>
+                  <div class="btn-group">
+                    <input type="text" class="form-control txttodo" name="todo" value="<%= todo.text %>"
+                      data-original-text="<%= todo.text %>" required disabled>
+                    <button type="button" class="btn btn-outline-primary btnEdit">Modifier</button>
+                  </div>
+                </td>
+                <td>
+                  <select class="form-control" name="status">
+                    <option value="0" <%=todo.status==0 ? 'selected' : '' %> >Prévu</option>
+                    <option value="1" <%=todo.status==1 ? 'selected' : '' %> >En cours</option>
+                    <option value="2" <%=todo.status==2 ? 'selected' : '' %> >En attente</option>
+                    <option value="3" <%=todo.status==3 ? 'selected' : '' %> >Fait</option>
+                  </select>
+                </td>
+                <td>
+                  <button type="submit" class="btn btn-outline-secondary">Mise à jour</button>
+              </form>
+              <form action="/delete/<%= todo.id %>" method="post" style="display: inline;">
+                <button type="submit" class="btn btn-outline-danger">Supprimer</button>
+              </form>
+              </td>
+            </tr>
+            <% }); %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+    crossorigin="anonymous"></script>
+  <script>
+    $(document).ready(function () {
+      $('.btnEdit').click(function () {
+        var container = $(this).closest('tr');
+        var txtTodo = container.find('.txttodo');
+        var btnEdit = container.find('.btnEdit');
+
+        var isDisabled = txtTodo.prop('disabled');
+
+        if (isDisabled) {
+          btnEdit.text('Annuler');
+          btnEdit.attr('class', 'btn btn-outline-danger btnEdit');
+
+        } else {
+          var originalText = txtTodo.data('original-text');
+          txtTodo.val(originalText);
+          btnEdit.text('Modifier');
+          btnEdit.attr('class', 'btn btn-outline-primary btnEdit');
+        }
+
+        txtTodo.prop('disabled', !isDisabled);
+      });
+    });
+  </script>
+
+</body>
+
+</html>
